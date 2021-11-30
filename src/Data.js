@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, FlatList, StyleSheet } from 'react-native';
+import { View, Text, Image, FlatList, StyleSheet } from 'react-native';
 import { distances } from './Map';
 
 const list = [];
@@ -18,7 +18,8 @@ for (let i = 0; i < data.length; i++) {
                     longitude: data[i].location.lng,
                     hours: (data[i].openingHours != null ? data[i].openingHours : ''),
                     wifi: false,
-                    website: (data[i].website != null ? data[i].website : '')
+                    website: (data[i].website != null ? data[i].website : ''),
+                    photos: data[i].imageUrls
                 });
             }
             // Change wifi to true if they have the property
@@ -39,12 +40,25 @@ const myKeyExtractor = (item) => {
 }
 
 const renderItem = ({ item }) => {
+    const photos = item.photos;
     return (
         <View>
+            <View style={styles.topRow}>
             <Text style={styles.list}>
-                {item.name}, {item.today}
+                {/* {item.name} {"\n"}Today: {item.today} */}
+                {item.name}
             </Text>
-            <Text style={styles.list} key={distances[item.id - 1]["id"]}>{distances[item.id - 1]["distance"]} mi</Text>
+            <Text style={styles.list} key={distances[item.id - 1]["id"]}>
+                {distances[item.id - 1]["distance"]} mi
+            </Text>
+            </View>
+            
+            <View style={{ flexDirection: 'row' }}>
+            {photos.map((photo) => (
+                <Image style={{ width: 100, height: 100, marginEnd: 20}} 
+                source={{uri: photo }}/>
+            ))}
+            </View>
         </View>
     );
 }
@@ -58,7 +72,7 @@ class Data extends React.Component {
         for (let i = 0, n = list.length; i < n; i++) {
             for (let j = 0, m = list[0].hours.length; j < m; j++) {
                 if (list[i]["hours"] === '') {
-                    list[i]["today"] = "";
+                    list[i]["today"] = "hours unknown";
                 }
                 else if (list[i]["hours"][j]["day"].includes(day)) {
                     list[i]["today"] = list[i]["hours"][j]["hours"];
@@ -84,6 +98,10 @@ class Data extends React.Component {
 }
 
 const styles = StyleSheet.create({
+    topRow: {
+        flex: 1,
+        justifyContent: 'space-between',
+    },
     list: {
         padding: 5,
         fontFamily: 'AvenirNext-Medium',
