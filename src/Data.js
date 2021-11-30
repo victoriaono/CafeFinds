@@ -6,27 +6,27 @@ const list = [];
 const data = require('../dataset.json');
 var n = 0;
 for (let i = 0; i < data.length; i++) {
-    var key = data[i].additionalInfo["Popular for"];
-    if (key != undefined) {
-        for (let j = 0, n = key.length; j < n; j++) {
+    var info = data[i].additionalInfo["Popular for"];
+    if (info != undefined) {
+        for (let j = 0; j < info.length; j++) {
             // Only get cafes that have this property
-            if ("Good for working on laptop" in key[j]) {
+            if ("Good for working on laptop" in info[j]) {
                 n++;
                 list.push({
                     id: n, name: data[i].title,
                     latitude: data[i].location.lat,
                     longitude: data[i].location.lng,
-                    hours: data[i].openingHours,
+                    hours: (data[i].openingHours != null ? data[i].openingHours : ''),
                     wifi: false,
-                    menu: (data[i].website != null ? data[i].website : '')
+                    website: (data[i].website != null ? data[i].website : '')
                 });
-                // Change wifi to true if they have the property
-                key = data[i].additionalInfo["Amenities"];
-                if (key != undefined) {
-                    for (let k = 0; j < key.length; j++) {
-                        if ("Free Wi-Fi" in key[k]) {
-                            list[n - 1]["wifi"] = true;
-                        }
+            }
+            // Change wifi to true if they have the property
+            var amenities = data[i].additionalInfo["Amenities"];
+            if (amenities != undefined) {
+                for (let k = 0; j < amenities.length; j++) {
+                    if ("Free Wi-Fi" in amenities[k]) {
+                        list[n - 1]["wifi"] = true;
                     }
                 }
             }
@@ -57,7 +57,10 @@ class Data extends React.Component {
         // Get today's opening hours
         for (let i = 0, n = list.length; i < n; i++) {
             for (let j = 0, m = list[0].hours.length; j < m; j++) {
-                if (list[i]["hours"][j]["day"].includes(day)) {
+                if (list[i]["hours"] === '') {
+                    list[i]["today"] = "";
+                }
+                else if (list[i]["hours"][j]["day"].includes(day)) {
                     list[i]["today"] = list[i]["hours"][j]["hours"];
                     break;
                 }

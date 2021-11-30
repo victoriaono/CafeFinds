@@ -44,8 +44,8 @@ export default class Map extends React.Component {
                   initialRegion={{
                     latitude: initialLat,
                     longitude: initialLng,
-                    latitudeDelta: 0.0200,
-                    longitudeDelta: 0.0200 * ASPECT_RATIO,
+                    latitudeDelta: 0.0350,
+                    longitudeDelta: 0.0350 * ASPECT_RATIO,
                   }}>
                   {coordinates.map((item) => (
                     <Marker key={item.id} coordinate={{ latitude: item.latitude, longitude: item.longitude}} />
