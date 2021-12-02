@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Text, Image, FlatList, StyleSheet } from 'react-native';
+import React, { useCallback } from 'react';
+import { View, Text, Image, FlatList, StyleSheet, Button, TouchableOpacity, Linking, Alert } from 'react-native';
 import { distances } from './Map';
 
 const list = [];
@@ -35,6 +35,20 @@ for (let i = 0; i < data.length; i++) {
     }
 }
 
+const OpenURLButton = ({ url }) => {
+    const handlePress = useCallback(async () => {
+        // Check if the link is supported
+        try {
+            const response = await Linking.canOpenURL(url);
+            await Linking.openURL(url);
+        } catch (error) {
+            Alert.alert("Invalid URL");
+        }
+    }, [url]);
+
+    return <TouchableOpacity style={styles.button} onPress={handlePress}><Text style={styles.list}>Website</Text></TouchableOpacity>;
+}
+
 const myKeyExtractor = (item) => {
     return item.id;
 }
@@ -42,22 +56,25 @@ const myKeyExtractor = (item) => {
 const renderItem = ({ item }) => {
     const photos = item.photos;
     return (
-        <View>
+        <View style={styles.card}>
             <View style={styles.topRow}>
-            <Text style={styles.list}>
-                {/* {item.name} {"\n"}Today: {item.today} */}
-                {item.name}
-            </Text>
-            <Text style={styles.list} key={distances[item.id - 1]["id"]}>
-                {distances[item.id - 1]["distance"]} mi
-            </Text>
+                <Text style={[styles.list, {fontSize: 18}]}>
+                    {item.name}
+                </Text>
+                <Text style={[styles.list, {color: '#767676'}]}>
+                    {distances[item.id - 1]["distance"]} mi
+                </Text>
             </View>
-            
-            <View style={{ flexDirection: 'row' }}>
-            {photos.map((photo) => (
-                <Image style={{ width: 100, height: 100, marginEnd: 20}} 
-                source={{uri: photo }}/>
-            ))}
+            <View style={styles.images}>
+                {photos.map((photo, index) => (
+                    <Image style={{ width: 100, height: 100 }}
+                        source={{ uri: photo }} 
+                        key={index} />
+                ))}
+            </View>
+            <Text style={[styles.list, {textAlign: 'right'}]}>Today: {item.today}</Text>
+            <View style={{direction: 'rtl'}}>
+                <OpenURLButton url={item.website}></OpenURLButton>
             </View>
         </View>
     );
@@ -98,14 +115,31 @@ class Data extends React.Component {
 }
 
 const styles = StyleSheet.create({
+    card: {
+        margin: 20,
+        
+    },
     topRow: {
-        flex: 1,
+        flexDirection: 'row',
         justifyContent: 'space-between',
+        paddingBottom: 10,
     },
     list: {
-        padding: 5,
         fontFamily: 'AvenirNext-Medium',
         fontSize: 15,
+    },
+    images: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+    },
+    button: {
+        width: 80,
+        height: 30,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderWidth: 1,
+        borderColor: '#E0B1CB',
+        borderRadius: 10,
     },
     separator: {
         height: 1,

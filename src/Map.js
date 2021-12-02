@@ -1,5 +1,5 @@
 import React from 'react';
-import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
+import MapView, {Callout, Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import {
     SafeAreaView,
     StyleSheet,
@@ -22,6 +22,13 @@ for (let i = 0, n = list.length; i < n; i++) {
   distance = haversine_distance(initialLat, coordinates[i]["latitude"], initialLng, coordinates[i]["longitude"]);
   distances.push({id: list[i]["id"], distance: distance.toFixed(1)});
   }
+distances.sort(function(a,b) {
+  return a.distance - b.distance
+});
+
+// list.sort(function(a, b) {
+//   return distances.indexOf(a["id"]) - distances.indexOf(b["id"])
+// });
 
 function haversine_distance(lat1, lat2, lng1, lng2) {
   var R = 3958.8; // Radius of Earth in miles
@@ -36,6 +43,15 @@ function haversine_distance(lat1, lat2, lng1, lng2) {
 
 export default class Map extends React.Component {
     render() {
+      // const showInfo = () => {
+
+      // }
+      list.sort(function(a, b) {
+        // Want to sort the list based on the id values of distances
+        return distances.indexOf(a["id"]) - distances.indexOf(b["id"])
+      });
+      // console.log(distances);
+      // console.log(list[0]);
         return (
             <View style={{flex: 1}}>
                 <MapView 
@@ -48,7 +64,12 @@ export default class Map extends React.Component {
                     longitudeDelta: 0.0350 * ASPECT_RATIO,
                   }}>
                   {coordinates.map((item) => (
-                    <Marker key={item.id} coordinate={{ latitude: item.latitude, longitude: item.longitude}} />
+                    <Marker key={item.id} 
+                      coordinate={{ latitude: item.latitude, longitude: item.longitude}} 
+                      
+                    >
+                    <Callout><View><Text style={styles.marker}>{list[item.id-1].name}</Text></View></Callout>
+                    </Marker>
                   ))}
               </MapView> 
             </View>
@@ -61,6 +82,9 @@ const styles = StyleSheet.create({
       width: Dimensions.get('window').width,
       height: Dimensions.get('window').height / 2.3,
     },
+    marker: {
+      fontFamily: 'AvenirNext-Medium',
+    }
   });
 
 export {distances};
