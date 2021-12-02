@@ -9,12 +9,14 @@ import {
   } from 'react-native';
 import {list} from './Data'
 import Icon from 'react-native-vector-icons/Fontisto';
+import NumberMarker from './NumberMarker';
 
 const { width, height } = Dimensions.get('window');
 const initialLat = 42.3490316;
 const initialLng = -71.079751;
 const ASPECT_RATIO = width / height;
 
+// Get coordinates and find distance from initial region defined above
 const coordinates = [];
 const distances = [];
 for (let i = 0, n = list.length; i < n; i++) {
@@ -22,12 +24,19 @@ for (let i = 0, n = list.length; i < n; i++) {
   distance = haversine_distance(initialLat, coordinates[i]["latitude"], initialLng, coordinates[i]["longitude"]);
   distances.push({id: list[i]["id"], distance: distance.toFixed(1)});
   }
-distances.sort(function(a,b) {
-  return a.distance - b.distance
-});
 
-// list.sort(function(a, b) {
-//   return distances.indexOf(a["id"]) - distances.indexOf(b["id"])
+// Sort by distance
+// distances.sort(function(a,b) {
+//   return a.distance - b.distance;
+// })
+// console.log(distances);
+// coordinates.sort(function(a,b) {
+//   for (let i=0; i<distances.length; i++) {
+//     if (distances[i]["id"] == a) {
+//       var index = 
+//     }
+//   }
+//   return distances.indexOf(a["id"]) - distances.indexOf(b)
 // });
 
 function haversine_distance(lat1, lat2, lng1, lng2) {
@@ -40,18 +49,8 @@ function haversine_distance(lat1, lat2, lng1, lng2) {
   return d;
 }
 
-
 export default class Map extends React.Component {
     render() {
-      // const showInfo = () => {
-
-      // }
-      list.sort(function(a, b) {
-        // Want to sort the list based on the id values of distances
-        return distances.indexOf(a["id"]) - distances.indexOf(b["id"])
-      });
-      // console.log(distances);
-      // console.log(list[0]);
         return (
             <View style={{flex: 1}}>
                 <MapView 
@@ -68,7 +67,8 @@ export default class Map extends React.Component {
                       coordinate={{ latitude: item.latitude, longitude: item.longitude}} 
                       
                     >
-                    <Callout><View><Text style={styles.marker}>{list[item.id-1].name}</Text></View></Callout>
+                      <NumberMarker number={item.id}></NumberMarker>
+                    <Callout style={styles.callout}><View><Text style={{fontFamily: 'AvenirNext-Medium'}}>{list[item.id-1].name}</Text></View></Callout>
                     </Marker>
                   ))}
               </MapView> 
@@ -80,10 +80,11 @@ export default class Map extends React.Component {
 const styles = StyleSheet.create({
     map: {
       width: Dimensions.get('window').width,
-      height: Dimensions.get('window').height / 2.3,
+      height: Dimensions.get('window').height / 2.4,
     },
-    marker: {
-      fontFamily: 'AvenirNext-Medium',
+    callout: {
+      width: 100,
+      alignItems: 'center',
     }
   });
 

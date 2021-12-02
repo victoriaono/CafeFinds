@@ -57,9 +57,9 @@ const renderItem = ({ item }) => {
     const photos = item.photos;
     return (
         <View style={styles.card}>
-            <View style={styles.topRow}>
+            <View style={styles.row}>
                 <Text style={[styles.list, {fontSize: 18}]}>
-                    {item.name}
+                    {item.id}. {item.name}
                 </Text>
                 <Text style={[styles.list, {color: '#767676'}]}>
                     {distances[item.id - 1]["distance"]} mi
@@ -72,7 +72,11 @@ const renderItem = ({ item }) => {
                         key={index} />
                 ))}
             </View>
-            <Text style={[styles.list, {textAlign: 'right'}]}>Today: {item.today}</Text>
+            <View style={styles.row}>
+                <Text style={styles.list}>Free WiFi: {item.wifi ? "Yes" : "Unconfirmed"}</Text>
+                <Text style={styles.list}>Today: {item.today}</Text>
+            </View>
+            
             <View style={{direction: 'rtl'}}>
                 <OpenURLButton url={item.website}></OpenURLButton>
             </View>
@@ -119,10 +123,9 @@ const styles = StyleSheet.create({
         margin: 20,
         
     },
-    topRow: {
+    row: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        paddingBottom: 10,
     },
     list: {
         fontFamily: 'AvenirNext-Medium',
@@ -131,6 +134,8 @@ const styles = StyleSheet.create({
     images: {
         flexDirection: 'row',
         justifyContent: 'space-between',
+        marginTop: 10,
+        marginBottom: 10,
     },
     button: {
         width: 80,

@@ -15,6 +15,7 @@ const App = () => {
       <View style={styles.container}>
         <View style={styles.header}>
          <Text style={styles.title}>Cafe Finds</Text>
+         <Text style={styles.subtitle}>Find local coffee shops that are specifically good for being on that grind!</Text>
         </View>
         <Map />
         <Data />
@@ -29,7 +30,7 @@ const styles = StyleSheet.create({
   header: {
     alignItems: 'center',
     justifyContent: 'center',
-    flex: 0.3,
+    flex: 0.4,
     backgroundColor: '#E0B1CB',
   },
   title: {
@@ -38,7 +39,13 @@ const styles = StyleSheet.create({
     fontSize: 30,
     color: '#fff',
   },
-  
+  subtitle: {
+    fontFamily: 'AvenirNext-Medium',
+    fontSize: 15,
+    textAlign: 'center',
+    color: '#fff',
+    paddingHorizontal: 30,
+  }
 });
 
 export default App;
