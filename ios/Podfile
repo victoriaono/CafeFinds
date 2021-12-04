@@ -9,6 +9,9 @@ target 'CafeFinds' do
   pod 'GoogleMaps'
   pod 'Google-Maps-iOS-Utils'
   pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
+  # React Native Permissions
+  permissions_path = '../node_modules/react-native-permissions/ios'
+  pod 'Permission-LocationWhenInUse', :path => "#{permissions_path}/LocationWhenInUse"
   config = use_native_modules!
 
   use_react_native!(
