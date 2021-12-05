@@ -1,28 +1,36 @@
+// File to grab data of cafes based on user's location
+
+import { initialLat, initialLng } from './Map';
+
 const { ApifyClient } = require('apify-client');
+const fs = require('fs');
 
 // Initialize the ApifyClient with API token
 const client = new ApifyClient({
     token: 'apify_api_9bAlWd478ZNiZSEhlLDd2eC7WTeI1Q4yt7vI',
 });
 
+// Starting URL to crawl in input
+const url = `https://www.google.com/maps/search/coffee+shop/@${initialLat},${initialLng},15z/`;
+
 // Prepare actor input
 const input = {
     "searchStringsArray": [
         ""
     ],
-    "maxCrawledPlaces": 10,
+    "maxCrawledPlaces": 80,
     "language": "en",
     "exportPlaceUrls": false,
     "includeHistogram": false,
     "includeOpeningHours": true,
-    "maxImages": 0,
+    "maxImages": 3,
     "maxReviews": 0,
     "proxyConfig": {
         "useApifyProxy": true
     },
     "startUrls": [
         {
-            "url": "https://www.google.com/maps/search/coffee+shop/@40.7094287,-74.0065137,15z/data=!3m1!4b1"
+            "url": url
         }
     ],
     "zoom": 15,
@@ -34,12 +42,15 @@ const input = {
     // Run the actor and wait for it to finish
     const run = await client.actor("drobnikj/crawler-google-places").call(input);
 
-    // Fetch and print actor results from the run's dataset (if any)
-    console.log('Results from dataset');
+    // Fetch and print actor results from the run's dataset
+    console.log('Downloading data...');
     const myDataSet = await client.dataset(run.defaultDatasetId);
-    myDataSet.downloadItems("json");
-    // const { items } = await client.dataset(run.defaultDatasetId).listItems();
-    // items.forEach((item) => {
-    //     console.dir(item);
-    // });
+    const jsonData = JSON.stringify(myDataSet);
+    fs.writeFile("./src/dataset.json", jsonData, 'utf8', function (err) {
+        if (err) {
+            console.log("An error occured while downloading JSON");
+            return console.log(err);
+        }
+        console.log("JSON file has been saved");
+    });
 })();

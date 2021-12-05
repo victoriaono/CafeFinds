@@ -14,6 +14,7 @@ import Icon from 'react-native-vector-icons/Fontisto';
 import NumberMarker from './NumberMarker';
 
 const { width, height } = Dimensions.get('window');
+// Default coordinates
 const initialLat = 42.3490316;
 const initialLng = -71.079751;
 const ASPECT_RATIO = width / height;
@@ -35,80 +36,73 @@ function haversine_distance(lat1, lat2, lng1, lng2) {
 
 const Map = () => {
   const [location, setLocation] = useState(null);
-    // Check for user's permission to use location
-    const handleLocationPermission = async () => {
-      let permissionCheck = ""
-      if (Platform.OS === "ios") {
-        permissionCheck = await check(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE)
+  // Check for user's permission to use location
+  const handleLocationPermission = async () => {
+    let permissionCheck = ""
+    if (Platform.OS === "ios") {
+      permissionCheck = await check(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE)
 
-        if (permissionCheck === RESULTS.DENIED) {
-          const permissionRequest = await request(
-            PERMISSIONS.IOS.LOCATION_WHEN_IN_USE
-          );
-          permissionRequest === RESULTS.GRANTED
-            ? console.warn("Location permission granted.")
-            : console.warn("Location perrmission denied.")
-        }
+      if (permissionCheck === RESULTS.DENIED) {
+        const permissionRequest = await request(
+          PERMISSIONS.IOS.LOCATION_WHEN_IN_USE
+        );
+        permissionRequest === RESULTS.GRANTED
+          ? console.warn("Location permission granted.")
+          : console.warn("Location perrmission denied.")
       }
     }
-    useEffect(() => {
-      handleLocationPermission()
-    }, []);
+  }
+  useEffect(() => {
+    handleLocationPermission()
+  }, []);
 
-    // Get user's current location
-    useEffect(() => {
-      Geolocation.getCurrentPosition(
-        position => {
-          const { latitude, longitude } = position.coords;
-          setLocation({ latitude, longitude })
-        },
-        error => {
-          console.log(error.code, error.message);
-        },
-        { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
-      )
-    }, []);
+  // Get user's current location
+  useEffect(() => {
+    Geolocation.getCurrentPosition(
+      position => {
+        const { latitude, longitude } = position.coords;
+        setLocation({ latitude, longitude })
+      },
+      error => {
+        console.log(error.code, error.message);
+      },
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
+    )
+  }, []);
 
-for (let i = 0, n = list.length; i < n; i++) {
-  coordinates.push({ id: list[i]["id"], latitude: list[i]["latitude"], longitude: list[i]["longitude"] });
-  distance = haversine_distance(location.latitude, coordinates[i]["latitude"], location.longitude, coordinates[i]["longitude"]);
-  distances.push({ id: list[i]["id"], distance: distance.toFixed(1) });
-}
-    return (
-      <View style={{ flex: 1 }}>
-        {location && (
-          <MapView
-            style={styles.map}
-            provider={PROVIDER_GOOGLE}
-            initialRegion={{
-              latitude: location.latitude,
-              longitude: location.longitude,
-              latitudeDelta: 0.0350,
-              longitudeDelta: 0.0350 * ASPECT_RATIO,
-            }}
-            showsUserLocation={true}>
-            {/* <MapView
-            style={styles.map}
-            provider={PROVIDER_GOOGLE}
-            initialRegion={{
-              latitude: initialLat,
-              longitude: initialLng,
-              latitudeDelta: 0.0350,
-              longitudeDelta: 0.0350 * ASPECT_RATIO,
-            }}
-            showsUserLocation={true}> */}
-            {coordinates.map((item) => (
-              <Marker key={item.id}
-                coordinate={{ latitude: item.latitude, longitude: item.longitude }}>
-                <NumberMarker number={item.id} />
-                <Callout style={styles.callout}><View><Text style={{ fontFamily: 'AvenirNext-Medium' }}>{list[item.id - 1].name}</Text></View></Callout>
-              </Marker>
-            ))}
-          </MapView>
-        )}
-      </View>
-    );
-            
+  initialLat = location.latitude;
+  initialLng = location.longitude;
+
+  for (let i = 0, n = list.length; i < n; i++) {
+    coordinates.push({ id: list[i]["id"], latitude: list[i]["latitude"], longitude: list[i]["longitude"] });
+    distance = haversine_distance(location.latitude, coordinates[i]["latitude"], location.longitude, coordinates[i]["longitude"]);
+    distances.push({ id: list[i]["id"], distance: distance.toFixed(1) });
+  }
+  return (
+    <View style={{ flex: 1 }}>
+      {location && (
+        <MapView
+          style={styles.map}
+          provider={PROVIDER_GOOGLE}
+          initialRegion={{
+            latitude: location.latitude,
+            longitude: location.longitude,
+            latitudeDelta: 0.0350,
+            longitudeDelta: 0.0350 * ASPECT_RATIO,
+          }}
+          showsUserLocation={true}>
+          {coordinates.map((item) => (
+            <Marker key={item.id}
+              coordinate={{ latitude: item.latitude, longitude: item.longitude }}>
+              <NumberMarker number={item.id} />
+              <Callout style={styles.callout}><View><Text style={{ fontFamily: 'AvenirNext-Medium' }}>{list[item.id - 1].name}</Text></View></Callout>
+            </Marker>
+          ))}
+        </MapView>
+      )}
+    </View>
+  );
+
 };
 
 const styles = StyleSheet.create({
@@ -122,5 +116,5 @@ const styles = StyleSheet.create({
   }
 });
 
-export { distances };
+export { distances, initialLat, initialLng };
 export default Map;

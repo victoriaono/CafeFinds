@@ -10,16 +10,16 @@ import {
 import Map from './src/Map';
 import Data from './src/Data';
 
-const App = () => { 
+const App = () => {
   return (
-      <View style={styles.container}>
-        <View style={styles.header}>
-         <Text style={styles.title}>Cafe Finds</Text>
-         <Text style={styles.subtitle}>Find local coffee shops that are specifically good for being on that grind!</Text>
-        </View>
-        <Map />
-        <Data />
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.title}>Cafe Finds</Text>
+        <Text style={styles.subtitle}>Find local coffee shops that are specifically good for being on that grind!</Text>
       </View>
+      <Map />
+      <Data />
+    </View>
   );
 };
 
