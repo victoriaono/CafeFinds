@@ -237,7 +237,7 @@ export default class Map extends React.Component {
 const styles = StyleSheet.create({
   map: {
     width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height / 2.9,
+    height: Dimensions.get('window').height / 3,
   },
   callout: {
     width: 100,
