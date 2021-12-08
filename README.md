@@ -10,3 +10,5 @@ Since iOS Simulator is only available on Macs, if you have Windows, you will nee
 
 Once the simulator is up and running, the app should ask for permission to use your location. Click allow while using app (or equivalent in Android).
 The app will display a map with your current location shown and the list of coffee shops available in the Boston area.
+
+#### [Link to screencast video](https://youtu.be/65IJn82btBA)
