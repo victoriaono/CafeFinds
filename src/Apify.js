@@ -7,7 +7,7 @@
 
 // // Initialize the ApifyClient with API token
 // const client = new ApifyClient({
-//     token: 'apify_api_9bAlWd478ZNiZSEhlLDd2eC7WTeI1Q4yt7vI',
+//     token: 'API_KEY',
 // });
 
 // // Starting URL to crawl in input
